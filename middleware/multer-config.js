@@ -25,6 +25,7 @@ router.use("/", upload.single("image"), async (req, res, next) => {
         const name = originalname.split(" ").join("_");
         const newName = name+Date.now()+".webp"
         await sharp(buffer)
+        .rotate()
         .resize({
             width: 400,
             height: 600
