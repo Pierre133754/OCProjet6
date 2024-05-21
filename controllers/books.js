@@ -84,7 +84,7 @@ exports.deleteBook = (req, res, next) => {
 exports.rateBook = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
     .then(book => {
-        if (book.userId === req.auth.userId ) {   
+        if ( book.ratings.find(rating => rating.userId === req.auth.userId) ) {   
             res.status(401).json({ message: "vous avez deja noté le livre" })   
         } else {
             book.ratings.push({
@@ -93,14 +93,13 @@ exports.rateBook = (req, res, next) => {
             })
             var sum = 0;
             book.ratings.forEach(rating => {
-                sum += rating.grade
+                if (!isNaN(rating.grade)) {
+                    sum += rating.grade
+                }
             })
             book.averageRating = sum / book.ratings.length;
-            const bookObject = {
-                ratings: [...book.ratings],
-                averageRating: book.averageRating
-            }
-            Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
+            console.log(book)
+            Book.updateOne({ _id: req.params.id }, book)
             .then(() => res.status(200).json(book))
             .catch(error => res.status(400).json({ error }));
         }
