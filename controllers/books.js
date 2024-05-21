@@ -98,7 +98,6 @@ exports.rateBook = (req, res, next) => {
                 }
             })
             book.averageRating = sum / book.ratings.length;
-            console.log(book)
             Book.updateOne({ _id: req.params.id }, book)
             .then(() => res.status(200).json(book))
             .catch(error => res.status(400).json({ error }));
