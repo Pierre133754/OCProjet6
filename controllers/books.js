@@ -92,12 +92,14 @@ exports.rateBook = (req, res, next) => {
                 grade: req.body.rating
             })
             var sum = 0;
+            var count = 0;
             book.ratings.forEach(rating => {
                 if (!isNaN(rating.grade)) {
                     sum += rating.grade
+                    count++
                 }
             })
-            book.averageRating = sum / book.ratings.length;
+            book.averageRating = sum / count;
             Book.updateOne({ _id: req.params.id }, book)
             .then(() => res.status(200).json(book))
             .catch(error => res.status(400).json({ error }));
